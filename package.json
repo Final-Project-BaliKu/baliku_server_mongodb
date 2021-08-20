@@ -1,0 +1,31 @@
+{
+    "name": "baliku_server_mongodb",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "nodemon bin/www",
+        "start": "nodemon bin/www",
+        "test": "jest --detectOpenHandles --forceExit --runInBand "
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Final-Project-BaliKu/baliku_server_mongodb.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Final-Project-BaliKu/baliku_server_mongodb/issues"
+    },
+    "homepage": "https://github.com/Final-Project-BaliKu/baliku_server_mongodb#readme",
+    "dependencies": {
+        "bcrypt": "^5.0.1",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongodb": "^4.1.0",
+        "mongoose": "^5.13.7"
+    }
+}
