@@ -1,29 +1,8 @@
-const { getDatabase } = require('../config')
+const mongoose = require("mongoose");
 
-const collection = 'Users'
-class User {
-    static find() {
-        return getDatabase().collection(collection).find().toArray()
-    }
-    static findOne(query) {
-        return getDatabase().collection(collection).findOne(query);
-    }
-    static insertOne(data) {
-        return getDatabase().collection(collection).insertOne(data);
-    }
-    static updateOne(query, newValue){
-        return getDatabase().collection(collection).updateOne(query, newValue);
-    }
-    static deleteOne(query) {
-        return getDatabase().collection(collection).deleteOne(query);
-    }
-    static insertMany(query){
-        return getDatabase().collection(collection).insertMany(query)
-    }
-    static deleteMany() {
-        return getDatabase().collection(collection).deleteMany({})
-    }
-    
-}
+const UserSchema = new mongoose.Schema({
+    email: {type: String, required: true},
+    password :{type:String, required: true}
+}, {collection: 'Users'})
 
-module.exports = User;
+module.exports = User = mongoose.model("user", UserSchema);
