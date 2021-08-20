@@ -15,23 +15,19 @@ class Controller {
         password = bcrypt.hashSync(password, salt);  
         try{
             const response= await User.create({email, password})
-            console.log(response);
-            res.status(200).json(response);
+            res.status(201).json(response.email);
         }catch(error){
             res.status(500).json(error);
         }
     }
     static async login(req, res) {
-        console.log("ENTER");
         const { email, password } = req.body;
-        console.log(email,password);
         try{
             const response = await User.findOne({email})
             if(!response){
                 res.status(400).json('Username and Password not match')
             }else if(bcrypt.compareSync(password, response.password)){
-                let token = jwt.sign({id: response._id, email: response.email}, process.env.SECRET_KEY, {expiresIn: 60 * 60});
-                console.log(token);
+
                 res.status(200).json({token, email})
             }else{
                 res.status(400).json('Username and Password not match')

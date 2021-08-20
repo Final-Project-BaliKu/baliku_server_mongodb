@@ -27,5 +27,9 @@
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^4.1.0",
         "mongoose": "^5.13.7"
+    },
+    "devDependencies": {
+        "jest": "^27.0.6",
+        "supertest": "^6.1.6"
     }
 }
