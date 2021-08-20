@@ -7,7 +7,7 @@ const { authentication } = require("../middlewares/auth");
 router.get("/", Controller.allItineraries);
 
 // get one where user login
-// router.get("/", Controller.getOne);
+router.get("/:id", Controller.getOne);
 
 router.post("/", Controller.postItinerary);
 router.put("/:id", Controller.putItinerary);
