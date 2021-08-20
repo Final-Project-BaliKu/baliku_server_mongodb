@@ -45,6 +45,9 @@ const ItinerarySchema = new mongoose.Schema({
     price: {
         type: Number,
     },
+    day: {
+        type: Number,
+    },
 });
 
-module.exports = Itinerary = mongoose.model("itinerary", ItinerarySchema);
+module.exports = Itinerary = mongoose.model("itineraries", ItinerarySchema);
