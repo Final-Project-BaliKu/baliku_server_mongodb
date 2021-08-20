@@ -16,7 +16,62 @@ class Controller {
 
     static getOne(req, res) {}
 
-    static postItinerary(req, res) {}
+    static async postItinerary(req, res) {
+        // const { _id: UserId } = req.user;
+
+        console.log(req.user);
+
+        // const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image } = req.body;
+
+        // const newItinerary = {
+        //     UserId,
+        //     checkIn,
+        //     checkOut,
+        //     places: {
+        //         name,
+        //         locationId,
+        //         location,
+        //         latitude,
+        //         longitude,
+        //         rating,
+        //         description,
+        //         image,
+        //     },
+        //     price: +price,
+        // };
+
+        // try {
+        //     let response = await Itinerary.findOne({ name });
+
+        //     let newItinerary = new Itinerary({
+        //         UserId,
+        //         checkIn,
+        //         checkOut,
+        //         places: [
+        //             {
+        //                 name,
+        //                 locationId,
+        //                 location,
+        //                 latitude,
+        //                 longitude,
+        //                 rating,
+        //                 description,
+        //                 image,
+        //             },
+        //         ],
+        //         price: +price,
+        //     });
+        //     response = await Itinerary.create(newItinerary);
+        //     return res.status(201).json(response);
+        // } catch (err) {
+        //     /* istanbul ignore next */
+        //     if (err.message !== undefined) {
+        //         return res.status(400).json({ message: err.message });
+        //     } else {
+        //         return res.status(500).json({ message: "Internal server error" });
+        //     }
+        // }
+    }
 
     static putItinerary(req, res) {}
 
