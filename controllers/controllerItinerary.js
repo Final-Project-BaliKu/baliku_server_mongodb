@@ -11,6 +11,8 @@ class Controller {
             res.status(200).json(response);
         } catch (err) {
             // console.log(err);
+            /* istanbul ignore next */
+
             res.status(500).json({ message: "Internal Server Error" });
         }
     }
@@ -24,6 +26,8 @@ class Controller {
             if (response) {
                 return res.status(200).json(response);
             } else {
+                /* istanbul ignore next */
+
                 return res.status(404).json({ message: "Itinerary not found" });
             }
         } catch (err) {
@@ -36,7 +40,9 @@ class Controller {
         const { _id: UserId } = req.user;
         // console.log(req.user);
 
-        const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day } = req.body;
+        console.log(req.body, 1996696896);
+
+        const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day, places } = req.body;
 
         // const newItinerary = {
         //     UserId,
@@ -62,27 +68,17 @@ class Controller {
                 UserId,
                 checkIn,
                 checkOut,
-                places: [
-                    {
-                        name,
-                        locationId,
-                        location,
-                        latitude,
-                        longitude,
-                        rating,
-                        description,
-                        image,
-                    },
-                ],
+                places,
                 price: +price,
                 day,
             });
             response = await newItinerary.save();
-            // console.log(response);
+            console.log(response, 1231244134);
+            // newItinerary._id = response._id;
             return res.status(201).json(response);
         } catch (err) {
-            /* istanbul ignore next */
             console.log(err.message);
+            /* istanbul ignore next */
             if (err.message !== undefined) {
                 return res.status(400).json({ message: err.message });
             } else {
@@ -94,30 +90,23 @@ class Controller {
     static async putItinerary(req, res) {
         const { _id: UserId } = req.user;
         const id = req.params.id;
-        const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day } = req.body;
+        const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day, places } = req.body;
 
         const updatedItinerary = {
             UserId,
             checkIn,
             checkOut,
-            places: {
-                name,
-                locationId,
-                location,
-                latitude,
-                longitude,
-                rating,
-                description,
-                image,
-            },
+            places,
             price: +price,
-            day: +day,
+            day,
         };
 
         try {
             let response = await Itinerary.findOneAndUpdate(id, updatedItinerary, {
                 new: true,
             });
+
+            console.log(response, 123456789);
 
             if (response) {
                 return res.status(200).json(response);
