@@ -88,6 +88,21 @@ describe("itineraries test case", () => {
         expect(response.status).toBe(200);
     });
 
+    it("should not get detail of one itinerary with wrong id", async () => {
+        // console.log(id);
+        const response = await request(app).get(`/itineraries/6120f16420578585cbe4fc29`).set("access_token", access_token).send();
+        // console.log(response.body);
+        expect(response.status).toBe(404);
+    });
+
+    it("should not update detail of one itinerary when fields not filled", async () => {
+        // console.log(id);
+        const response = await request(app).put(`/itineraries/${id}`).set("access_token", access_token).send({
+            // UserId: 1,
+        });
+        expect(response.status).toBe(400);
+    });
+
     it("should update detail of one itinerary", async () => {
         // console.log(id);
         const response = await request(app)
@@ -120,5 +135,62 @@ describe("itineraries test case", () => {
         const response = await request(app).delete(`/itineraries/${id}`).set("access_token", access_token).send();
         // console.log(response.body);
         expect(response.status).toBe(200);
+    });
+
+    it("should not be able to delete one itinerary when id not found", async () => {
+        // console.log(id);
+        const response = await request(app).delete(`/itineraries/${id}`).set("access_token", access_token).send();
+        // console.log(response.body);
+        expect(response.status).toBe(404);
+    });
+
+    it("should not update detail of one itinerary when id not found", async () => {
+        // console.log(id);
+        const response = await request(app)
+            .put(`/itineraries/${id}`)
+            .set("access_token", access_token)
+            .send({
+                // UserId: 1,
+                checkIn: "10/11/2020",
+                checkOut: "10/12/2020",
+                places: [
+                    {
+                        name: "monkey forest 14",
+                        locationId: "123321",
+                        location: "Ubud, Gianyar",
+                        latitude: "-8.5184",
+                        longitude: "115.25884",
+                        rating: "4",
+                        description: "loremfewfwefew fwefwqfwf fewfawaewfewf ewffewfewfwe",
+                        image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
+                    },
+                ],
+                price: 70,
+                day: "1",
+            });
+        expect(response.status).toBe(404);
+    });
+
+    it("should not add itinerary when fields are not filled", async () => {
+        // console.log(id);
+        const response = await request(app)
+            .post(`/itineraries/`)
+            .set("access_token", access_token)
+            .send({
+                // UserId: 1,
+                places: [
+                    {
+                        name: "monkey forest 14",
+                        locationId: "123321",
+                        location: "Ubud, Gianyar",
+                        latitude: "-8.5184",
+                        longitude: "115.25884",
+                        rating: "4",
+                        description: "loremfewfwefew fwefwqfwf fewfawaewfewf ewffewfewfwe",
+                        image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
+                    },
+                ],
+            });
+        expect(response.status).toBe(400);
     });
 });

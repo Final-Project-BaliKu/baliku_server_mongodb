@@ -32,21 +32,26 @@ const mongoose = require("mongoose");
 const ItinerarySchema = new mongoose.Schema({
     UserId: {
         type: String,
+        required: true,
     },
     checkIn: {
         type: String,
+        required: true,
     },
     checkOut: {
         type: String,
+        required: true,
     },
     places: {
         type: [],
     },
     price: {
         type: Number,
+        required: true,
     },
     day: {
         type: String,
+        required: true,
     },
 });
 

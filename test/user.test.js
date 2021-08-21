@@ -105,4 +105,18 @@ describe("Test case user", () => {
         expect(response.status).toBe(200);
         // expect(response.body).toBe("Username and Password not match");
     });
+
+    it("Get all user", async () => {
+        const response = await request(app).get("/users").set("access_token", "access_token").send();
+        // console.log(response.body, 123123);
+        expect(response.status).toBe(400);
+        // expect(response.body).toBe("Username and Password not match");
+    });
+
+    it("Get all user", async () => {
+        const response = await request(app).get("/users").send();
+        // console.log(response.body, 123123);
+        expect(response.status).toBe(400);
+        // expect(response.body).toBe("Username and Password not match");
+    });
 });

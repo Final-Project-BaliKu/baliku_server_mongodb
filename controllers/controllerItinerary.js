@@ -22,12 +22,9 @@ class Controller {
         // console.log(id);
         try {
             let response = await Itinerary.find({ _id: id });
-            // console.log(response);
-            if (response) {
+            if (response.length > 0) {
                 return res.status(200).json(response);
             } else {
-                /* istanbul ignore next */
-
                 return res.status(404).json({ message: "Itinerary not found" });
             }
         } catch (err) {
@@ -40,7 +37,7 @@ class Controller {
         const { _id: UserId } = req.user;
         // console.log(req.user);
 
-        console.log(req.body, 1996696896);
+        // console.log(req.body, 1996696896);
 
         const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day, places } = req.body;
 
@@ -73,7 +70,7 @@ class Controller {
                 day,
             });
             response = await newItinerary.save();
-            console.log(response, 1231244134);
+            // console.log(response, 1231244134);
             // newItinerary._id = response._id;
             return res.status(201).json(response);
         } catch (err) {
@@ -82,6 +79,7 @@ class Controller {
             if (err.message !== undefined) {
                 return res.status(400).json({ message: err.message });
             } else {
+                /* istanbul ignore next */
                 return res.status(500).json({ message: "Internal server error" });
             }
         }
@@ -106,17 +104,20 @@ class Controller {
                 new: true,
             });
 
-            console.log(response, 123456789);
+            // console.log(response, 123456789);
 
             if (response) {
+                console.log(response);
                 return res.status(200).json(response);
             } else {
                 return res.status(404).json({ message: "Itinerary not found" });
             }
         } catch (err) {
+            /* istanbul ignore next */
             if (err.message !== undefined) {
                 return res.status(400).json({ message: err.message });
             } else {
+                /* istanbul ignore next */
                 return res.status(500).json({ message: "Internal server error" });
             }
         }
@@ -130,7 +131,6 @@ class Controller {
                 response = await Itinerary.deleteOne({ _id: id });
                 res.status(200).json(response);
             } else {
-                /* istanbul ignore next */
                 return res.status(404).json({ message: "Itinerary not found" });
             }
         } catch (err) {
