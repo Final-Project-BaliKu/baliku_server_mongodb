@@ -21,20 +21,37 @@ class Controller {
         }
     }
     static async login(req, res) {
+        console.log("testing");
         const { email, password } = req.body;
-        try{
-            const response = await User.findOne({email})
-            if(!response){
-                res.status(400).json('Username and Password not match')
-            }else if(bcrypt.compareSync(password, response.password)){
-
-                res.status(200).json({token, email})
+        // try{
+        //     const response = await User.findOne({email})
+        //     if(!response){
+        //         console.log("Its empty response")
+        //         res.status(400).json('Username and Password not match')
+        //     }else if(bcrypt.compareSync(password, response.password)){
+        //         console.log("Its Succed")
+        //         res.status(200).json({token, email})
+        //     }else{
+        //         res.status(400).json('Username and Password not match')
+        //     }
+        // }catch(error){
+        //     res.status(500).json(error)
+        // }
+        await User.findOne({email})
+        .then(data =>{
+            console.log(data);
+            if(!data){
+                res.status(403).json('Username and Password not match')
+            }else if(bcrypt.compareSync(password, data.password)){
+                let access_token = jwt.sign({id: data._id, email: data.email}, process.env.SECRET_KEY, {expiresIn: 60 * 60});
+                res.status(200).json({access_token, email})
             }else{
-                res.status(400).json('Username and Password not match')
+                res.status(404).json('Username and Password not match')
             }
-        }catch(error){
-            res.status(500).json(error)
-        }
+        })
+        .catch(err =>{
+            res.status(500).json("ITS A MISTAKE");
+        })
     }
     static async getAll(req, res) {
         console.log("ENTERING GETALL")

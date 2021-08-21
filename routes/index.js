@@ -6,6 +6,6 @@ const transactionRouter = require("./transaction");
 
 router.use("/users", userRouter);
 router.use("/itineraries", itineraryRouter);
-router.use("/transaction", transactionRouter);
+router.use("/transactions", transactionRouter);
 
 module.exports = router;
