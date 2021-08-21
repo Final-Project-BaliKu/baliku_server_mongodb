@@ -130,6 +130,7 @@ const resolvers = {
         },
 
         async itinerary(_, args) {
+            console.log(args);
             try {
                 let response = await axios({
                     method: "GET",
@@ -138,6 +139,7 @@ const resolvers = {
                         access_token: args.token,
                     },
                 });
+                console.log(response.data);
                 return response.data;
             } catch (err) {
                 return err;

@@ -21,8 +21,8 @@ class Controller {
         const { id } = req.params;
         // console.log(id);
         try {
-            let response = await Itinerary.find({ _id: id });
-            if (response.length > 0) {
+            let response = await Itinerary.findOne({ _id: id });
+            if (response) {
                 return res.status(200).json(response);
             } else {
                 return res.status(404).json({ message: "Itinerary not found" });
