@@ -38,16 +38,17 @@ const typeDefs = gql`
         UserId: ID
         date: String
         price: Float
-        duration: String
+        duration: Int
+        title: String
     }
 
     type Query {
         users(token: String): [User]
         itineraries(token: String): [Itinerary]
-        transactions: [Transaction]
+        transactions(token: String): [Transaction]
         user(_id: ID): User
-        itinerary(_id: ID): Itinerary
-        transaction(_id: ID): Transaction
+        itinerary(token: String, _id: ID): Itinerary
+        transaction(token: String, _id: ID): Transaction
     }
 
     type Mutation {
@@ -87,6 +88,7 @@ const typeDefs = gql`
             day: String
         ): Itinerary
         deleteItinerary(_id: ID, token: String): String
+        addTransaction(token: String, price: Float, duration: Int, title: String): Transaction
     }
 `;
 
@@ -123,6 +125,51 @@ const resolvers = {
                 return response.data;
             } catch (err) {
                 console.log(err);
+                return err;
+            }
+        },
+
+        async itinerary(_, args) {
+            try {
+                let response = await axios({
+                    method: "GET",
+                    url: `${baseUrl}/itineraries/${args._id}`,
+                    headers: {
+                        access_token: args.token,
+                    },
+                });
+                return response.data;
+            } catch (err) {
+                return err;
+            }
+        },
+
+        async transactions(_, args) {
+            try {
+                let response = await axios({
+                    method: "GET",
+                    url: `${baseUrl}/transactions`,
+                    headers: {
+                        access_token: args.token,
+                    },
+                });
+                return response.data;
+            } catch (err) {
+                return err;
+            }
+        },
+
+        async transaction(_, args) {
+            try {
+                let response = await axios({
+                    method: "GET",
+                    url: `${baseUrl}/transactions/${args._id}`,
+                    headers: {
+                        access_token: args.token,
+                    },
+                });
+                return response.data;
+            } catch (err) {
                 return err;
             }
         },
@@ -247,6 +294,26 @@ const resolvers = {
                 });
                 console.log(response.data);
                 return "Iternary has been deleted";
+            } catch (err) {
+                return err;
+            }
+        },
+
+        async addTransaction(_, args) {
+            try {
+                let response = await axios({
+                    method: "POST",
+                    url: `${baseUrl}/transactions`,
+                    headers: {
+                        access_token: args.token,
+                    },
+                    data: {
+                        title: args.title,
+                        duration: args.duration,
+                        price: args.price,
+                    },
+                });
+                return response.data;
             } catch (err) {
                 return err;
             }
