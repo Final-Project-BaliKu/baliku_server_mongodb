@@ -3,21 +3,24 @@ const Itinerary = require("../models/itinerary");
 
 class Controller {
     static async allItineraries(req, res) {
-        console.log("masuk sini");
+        // console.log("masuk sini");
+        const { _id: UserId } = req.user;
         try {
-            let response = await Itinerary.find();
-            console.log(response);
+            let response = await Itinerary.find({ UserId });
+            // console.log(response);
             res.status(200).json(response);
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({ message: "Internal Server Error" });
         }
     }
 
     static async getOne(req, res) {
         const { id } = req.params;
+        // console.log(id);
         try {
-            let response = await Itinerary.findOne({ _id: id });
+            let response = await Itinerary.find({ _id: id });
+            // console.log(response);
             if (response) {
                 return res.status(200).json(response);
             } else {
@@ -31,7 +34,7 @@ class Controller {
 
     static async postItinerary(req, res) {
         const { _id: UserId } = req.user;
-        console.log(req.user);
+        // console.log(req.user);
 
         const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day } = req.body;
 
@@ -72,13 +75,14 @@ class Controller {
                     },
                 ],
                 price: +price,
-                day: +day,
+                day,
             });
             response = await newItinerary.save();
-            console.log(response);
+            // console.log(response);
             return res.status(201).json(response);
         } catch (err) {
             /* istanbul ignore next */
+            console.log(err.message);
             if (err.message !== undefined) {
                 return res.status(400).json({ message: err.message });
             } else {

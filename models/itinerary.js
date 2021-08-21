@@ -46,7 +46,7 @@ const ItinerarySchema = new mongoose.Schema({
         type: Number,
     },
     day: {
-        type: Number,
+        type: String,
     },
 });
 
