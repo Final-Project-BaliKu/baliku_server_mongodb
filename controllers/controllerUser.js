@@ -18,6 +18,8 @@ class Controller {
             // console.log(response);
             res.status(201).json(response);
         } catch (error) {
+            /* istanbul ignore next */
+
             res.status(500).json(error);
         }
     }
@@ -38,6 +40,7 @@ class Controller {
                 res.status(400).json("Username and Password not match");
             }
         } catch (error) {
+            /* istanbul ignore next */
             res.status(500).json(error);
         }
     }
@@ -48,6 +51,7 @@ class Controller {
             // console.log(response);
             res.status(200).json(response);
         } catch (error) {
+            /* istanbul ignore next */
             res.status(500).json(error);
         }
     }

@@ -18,6 +18,7 @@ async function authentication(req, res, next) {
                             // console.log(req.user, 12321);
                             next();
                         } else {
+                            /* istanbul ignore next */
                             res.status(400).json("Invalid Authentication, Please login again !");
                         }
                     })
