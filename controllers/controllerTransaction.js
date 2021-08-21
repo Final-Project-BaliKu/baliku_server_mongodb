@@ -15,8 +15,8 @@ class Controller {
         }
     }
     static async addTransaction(req, res){
-        // const date = new Date();
-        const {date, price, duration} = req.body;
+        const date = new Date();
+        const {price, duration} = req.body;
         const UserId = req.user._id
         try{
             const response = await Transaction.create({UserId, date, price, duration})
