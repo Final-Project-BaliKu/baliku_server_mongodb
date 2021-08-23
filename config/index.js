@@ -24,9 +24,9 @@
 const mongoose = require("mongoose");
 const url = "";
 
-const connectDB = async () => {
+const connectDB = async (database) => {
     try {
-        await mongoose.connect("mongodb://localhost:27017/baliku", {
+        await mongoose.connect(database, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,

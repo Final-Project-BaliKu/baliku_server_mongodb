@@ -10,7 +10,7 @@ async function authentication(req, res, next) {
             // console.log("asdasdasds");
             const token = jwt.verify(access_token, process.env.SECRET_KEY);
             // console.log(token, 31231);
-            /* istanbul ignore next */
+            /* istanbul ignore else */
             if (token) {
                 await User.findOne({ _id: ObjectId(token.id) })
                     .then((data) => {
@@ -19,8 +19,6 @@ async function authentication(req, res, next) {
                             // console.log(req.user, 12321);
                             next();
                         } else {
-                            /* istanbul ignore next */
-
                             res.status(400).json("Invalid Authentication, Please login again !");
                         }
                     })
@@ -30,12 +28,10 @@ async function authentication(req, res, next) {
                     });
             } else {
                 /* istanbul ignore next */
-
                 res.status(400).json("Please login First");
             }
         } catch (error) {
             /* istanbul ignore next */
-
             res.status(400).json(error);
         }
     } else {

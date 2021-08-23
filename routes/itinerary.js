@@ -12,5 +12,6 @@ router.get("/:id", Controller.getOne);
 router.post("/", Controller.postItinerary);
 router.put("/:id", Controller.putItinerary);
 router.delete("/:id", Controller.deleteItinerary);
+router.patch("/:id", Controller.insertPlans);
 
 module.exports = router;

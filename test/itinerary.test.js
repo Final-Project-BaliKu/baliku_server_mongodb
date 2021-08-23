@@ -1,6 +1,7 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app.js");
+const connectDB = require("../config");
 
 let access_token;
 let id;
@@ -8,12 +9,13 @@ let id;
 describe("itineraries test case", () => {
     beforeAll(async () => {
         try {
-            await mongoose.connect("mongodb://localhost:27017/test", {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-            });
+            // await mongoose.connect("mongodb://localhost:27017/test", {
+            //     useNewUrlParser: true,
+            //     useUnifiedTopology: true,
+            //     useCreateIndex: true,
+            //     useFindAndModify: false,
+            // });
+            connectDB("mongodb://localhost:27017/test");
         } catch (err) {
             console.log(err);
         }
@@ -55,7 +57,7 @@ describe("itineraries test case", () => {
                 // UserId: 1,
                 checkIn: "10/11/2020",
                 checkOut: "10/12/2020",
-                places: [
+                plans: [
                     {
                         name: "monkey forest",
                         locationId: "123321",
@@ -67,8 +69,7 @@ describe("itineraries test case", () => {
                         image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
                     },
                 ],
-                price: 70,
-                day: "1",
+                title: "Explore yourself",
             });
         // console.log(response.body);
         id = response.body._id;
@@ -97,9 +98,8 @@ describe("itineraries test case", () => {
 
     it("should not update detail of one itinerary when fields not filled", async () => {
         // console.log(id);
-        const response = await request(app).put(`/itineraries/${id}`).set("access_token", access_token).send({
-            // UserId: 1,
-        });
+        const response = await request(app).put(`/itineraries/${id}`).set("access_token", access_token).send({});
+        // console.log(response.body);
         expect(response.status).toBe(400);
     });
 
@@ -112,7 +112,7 @@ describe("itineraries test case", () => {
                 // UserId: 1,
                 checkIn: "10/11/2020",
                 checkOut: "10/12/2020",
-                places: [
+                plans: [
                     {
                         name: "monkey forest 14",
                         locationId: "123321",
@@ -124,10 +124,31 @@ describe("itineraries test case", () => {
                         image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
                     },
                 ],
-                price: 70,
-                day: "1",
             });
         expect(response.status).toBe(200);
+    });
+
+    it("should update plans", async () => {
+        // console.log(id);
+        const response = await request(app)
+            .patch(`/itineraries/${id}`)
+            .set("access_token", access_token)
+            .send({
+                // UserId: 1,
+                plans: [
+                    {
+                        flight: "QZ 7463",
+                    },
+                ],
+            });
+        expect(response.status).toBe(200);
+    });
+
+    it("should not update plans when fields not filled", async () => {
+        // console.log(id);
+        const response = await request(app).patch(`/itineraries/${id}`).set("access_token", access_token).send();
+        // console.log(response.body);
+        expect(response.status).toBe(400);
     });
 
     it("should able to delete one itinerary", async () => {
@@ -153,7 +174,7 @@ describe("itineraries test case", () => {
                 // UserId: 1,
                 checkIn: "10/11/2020",
                 checkOut: "10/12/2020",
-                places: [
+                plans: [
                     {
                         name: "monkey forest 14",
                         locationId: "123321",
@@ -165,20 +186,18 @@ describe("itineraries test case", () => {
                         image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
                     },
                 ],
-                price: 70,
-                day: "1",
             });
         expect(response.status).toBe(404);
     });
 
-    it("should not add itinerary when fields are not filled", async () => {
+    it("should not add itinerary when id not found", async () => {
         // console.log(id);
         const response = await request(app)
             .post(`/itineraries/`)
             .set("access_token", access_token)
             .send({
                 // UserId: 1,
-                places: [
+                plans: [
                     {
                         name: "monkey forest 14",
                         locationId: "123321",
@@ -192,5 +211,28 @@ describe("itineraries test case", () => {
                 ],
             });
         expect(response.status).toBe(400);
+    });
+
+    it("should not update itinerary when id not found", async () => {
+        // console.log(id);
+        const response = await request(app)
+            .patch(`/itineraries/${id}`)
+            .set("access_token", access_token)
+            .send({
+                // UserId: 1,
+                plans: [
+                    {
+                        name: "monkey forest 14",
+                        locationId: "123321",
+                        location: "Ubud, Gianyar",
+                        latitude: "-8.5184",
+                        longitude: "115.25884",
+                        rating: "4",
+                        description: "loremfewfwefew fwefwqfwf fewfawaewfewf ewffewfewfwe",
+                        image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
+                    },
+                ],
+            });
+        expect(response.status).toBe(404);
     });
 });

@@ -39,7 +39,7 @@ class Controller {
 
         // console.log(req.body, 1996696896);
 
-        const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day, places } = req.body;
+        const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day, places, title } = req.body;
 
         // const newItinerary = {
         //     UserId,
@@ -63,18 +63,17 @@ class Controller {
 
             let newItinerary = new Itinerary({
                 UserId,
+                title,
                 checkIn,
                 checkOut,
-                places,
-                price: +price,
-                day,
+                plans: [],
             });
             response = await newItinerary.save();
             // console.log(response, 1231244134);
             // newItinerary._id = response._id;
             return res.status(201).json(response);
         } catch (err) {
-            console.log(err.message);
+            // console.log(err.message);
             /* istanbul ignore next */
             if (err.message !== undefined) {
                 return res.status(400).json({ message: err.message });
@@ -88,35 +87,34 @@ class Controller {
     static async putItinerary(req, res) {
         const { _id: UserId } = req.user;
         const id = req.params.id;
-        const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day, places } = req.body;
+        // console.log(id);
+        const { checkIn, checkOut, plans } = req.body;
+        // console.log(checkIn, checkOut, plans);
 
-        const updatedItinerary = {
-            UserId,
-            checkIn,
-            checkOut,
-            places,
-            price: +price,
-            day,
-        };
+        if (!checkIn || !checkOut || !plans) {
+            return res.status(400).json({ message: "please fill all fields" });
+        } else {
+            const updatedItinerary = {
+                UserId,
+                checkIn,
+                checkOut,
+                plans,
+            };
 
-        try {
-            let response = await Itinerary.findOneAndUpdate(id, updatedItinerary, {
-                new: true,
-            });
+            try {
+                let response = await Itinerary.findOneAndUpdate({ _id: id }, updatedItinerary, {
+                    new: true,
+                });
 
-            // console.log(response, 123456789);
+                // console.log(response, 123456789);
 
-            if (response) {
-                console.log(response);
-                return res.status(200).json(response);
-            } else {
-                return res.status(404).json({ message: "Itinerary not found" });
-            }
-        } catch (err) {
-            /* istanbul ignore next */
-            if (err.message !== undefined) {
-                return res.status(400).json({ message: err.message });
-            } else {
+                if (response) {
+                    // console.log(response);
+                    return res.status(200).json(response);
+                } else {
+                    return res.status(404).json({ message: "Itinerary not found" });
+                }
+            } catch (err) {
                 /* istanbul ignore next */
                 return res.status(500).json({ message: "Internal server error" });
             }
@@ -138,6 +136,29 @@ class Controller {
             if (err.message !== undefined) {
                 return res.status(400).json({ message: err.message });
             } else {
+                return res.status(500).json({ message: "Internal server error" });
+            }
+        }
+    }
+
+    static async insertPlans(req, res) {
+        const id = req.params.id;
+        // console.log(req.body);
+        // console.log(Object.keys(req.body).length !== 0);
+        if (Object.keys(req.body).length === 0) {
+            return res.status(400).json({ message: "please fill plans" });
+        } else {
+            try {
+                let response = await Itinerary.findOneAndUpdate({ _id: id }, { plans: req.body }, { new: true });
+
+                if (response) {
+                    // console.log(response.plans);
+                    return res.status(200).json(response);
+                } else {
+                    return res.status(404).json({ message: "Itinerary not found" });
+                }
+            } catch (err) {
+                /* istanbul ignore next */
                 return res.status(500).json({ message: "Internal server error" });
             }
         }

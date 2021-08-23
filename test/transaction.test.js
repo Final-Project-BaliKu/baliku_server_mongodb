@@ -1,6 +1,7 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app.js");
+const connectDB = require("../config");
 
 let access_token;
 let id;
@@ -8,12 +9,13 @@ let id;
 describe("transactions test case", () => {
     beforeAll(async () => {
         try {
-            await mongoose.connect("mongodb://localhost:27017/test", {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-            });
+            // await mongoose.connect("mongodb://localhost:27017/test", {
+            //     useNewUrlParser: true,
+            //     useUnifiedTopology: true,
+            //     useCreateIndex: true,
+            //     useFindAndModify: false,
+            // });
+            await connectDB("mongodb://localhost:27017/test");
         } catch (err) {
             console.log(err);
         }
@@ -61,6 +63,7 @@ describe("transactions test case", () => {
         const response = await request(app).post("/transactions").set("access_token", access_token).send({
             price: 750,
         });
+        // console.log(response.body, response.status);
         expect(response.status).toBe(400);
     });
 
@@ -71,7 +74,7 @@ describe("transactions test case", () => {
 
     it("should get one detail transactions by ID", async () => {
         const response = await request(app).get(`/transactions/${id}`).set("access_token", access_token).send();
-        console.log(response.body);
+        // console.log(response.body);
         expect(response.status).toBe(200);
     });
 

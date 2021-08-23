@@ -27,18 +27,21 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const app = require("../app");
+const connectDB = require("../config");
 
 let access_token;
 
 describe("Test case user", () => {
     beforeAll(async () => {
         try {
-            await mongoose.connect("mongodb://localhost:27017/test", {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useFindAndModify: false,
-            });
+            // await mongoose.connect("mongodb://localhost:27017/test", {
+            //     useNewUrlParser: true,
+            //     useUnifiedTopology: true,
+            //     useCreateIndex: true,
+            //     useFindAndModify: false,
+            // });
+
+            await connectDB("mongodb://localhost:27017/test");
         } catch (err) {
             console.log(err);
         }
@@ -58,6 +61,14 @@ describe("Test case user", () => {
             password: "test123",
         });
         expect(response.status).toBe(201);
+    });
+
+    it("should not able to register email empty ", async () => {
+        const response = await request(app).post("/users/register").send({
+            password: "test123",
+        });
+        // console.log(response.body);
+        expect(response.status).toBe(400);
     });
 
     it("email must be in valid standard", async () => {
@@ -85,8 +96,8 @@ describe("Test case user", () => {
             password: "test12345",
         });
         // console.log(response);
-        expect(response.status).toBe(400);
-        expect(response.body).toBe("Username and Password not match");
+        expect(response.status).toBe(401);
+        expect(response.body).toBe("email and Password not match");
     });
 
     it("Login failed because email not registered", async () => {
@@ -96,7 +107,7 @@ describe("Test case user", () => {
         });
         // console.log(response);
         expect(response.status).toBe(404);
-        expect(response.body).toBe("Username and Password not match");
+        expect(response.body).toBe("email not registered");
     });
 
     it("Get all user", async () => {
@@ -118,5 +129,13 @@ describe("Test case user", () => {
         // console.log(response.body, 123123);
         expect(response.status).toBe(400);
         // expect(response.body).toBe("Username and Password not match");
+    });
+
+    it("should not able to register a user unique", async () => {
+        const response = await request(app).post("/users/register").send({
+            email: "test@mail.com",
+            password: "test123",
+        });
+        expect(response.status).toBe(400);
     });
 });

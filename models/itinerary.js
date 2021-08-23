@@ -42,17 +42,20 @@ const ItinerarySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    places: {
+    plans: {
         type: [],
-    },
-    price: {
-        type: Number,
         required: true,
     },
-    day: {
+    title: {
         type: String,
         required: true,
     },
+    // price: {
+    //     type: Number,
+    // },
+    // day: {
+    //     type: String,
+    // },
 });
 
 module.exports = Itinerary = mongoose.model("itineraries", ItinerarySchema);

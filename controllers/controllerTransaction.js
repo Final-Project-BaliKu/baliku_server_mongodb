@@ -4,7 +4,7 @@ const Transaction = require("../models/transaction");
 class Controller {
     static async allTransaction(req, res) {
         const UserId = req.user._id;
-        console.log(UserId);
+        // console.log(UserId);
         try {
             const response = await Transaction.find({ UserId });
             // console.log(response);
@@ -37,14 +37,13 @@ class Controller {
         const UserId = req.user._id;
         try {
             const response = await Transaction.create({ UserId, date, price, duration, title });
-            console.log(response);
+            // console.log(response);
             res.status(201).json(response);
         } catch (err) {
+            /* istanbul ignore else */
             if (err.message !== undefined) {
                 res.status(400).json(err.message);
             } else {
-                /* istanbul ignore next */
-
                 res.status(500).json(err);
             }
         }

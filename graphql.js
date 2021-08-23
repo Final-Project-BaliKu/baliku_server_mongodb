@@ -1,6 +1,10 @@
 // graphQL
 const { ApolloServer, gql } = require("apollo-server");
 const axios = require("axios");
+const Redis = require("ioredis");
+
+// Redis
+const redis = new Redis();
 
 const baseUrl = "http://localhost:3000";
 
@@ -21,16 +25,21 @@ const typeDefs = gql`
         rating: Float
         description: String
         image: String
+        price: Float
+    }
+
+    type Plan {
+        day: String
+        places: [Place]
     }
 
     type Itinerary {
         _id: ID
         UserId: ID
+        title: String
         checkIn: String
         checkOut: String
-        places: [Place]
-        price: Float
-        day: String
+        plans: [Plan]
     }
 
     type Transaction {
@@ -57,6 +66,7 @@ const typeDefs = gql`
         postItinerary(
             token: String
             UserId: ID
+            title: String
             checkIn: String
             checkOut: String
             price: Float
@@ -74,6 +84,7 @@ const typeDefs = gql`
             token: String
             _id: ID
             UserId: ID
+            title: String
             checkIn: String
             checkOut: String
             price: Float
@@ -89,40 +100,64 @@ const typeDefs = gql`
         ): Itinerary
         deleteItinerary(_id: ID, token: String): String
         addTransaction(token: String, price: Float, duration: Int, title: String): Transaction
+        insertPlans(
+            token: String
+            _id: ID
+            checkIn: String
+            checkOut: String
+            price: Float
+            name: String
+            locationId: String
+            location: String
+            latitude: String
+            longitude: String
+            rating: Float
+            description: String
+            image: String
+            day: String
+        ): Itinerary
     }
 `;
 
 const resolvers = {
     Query: {
         async users(_, args) {
-            console.log(args);
+            // console.log(args);
             try {
-                let response = await axios({
-                    method: "GET",
-                    url: `${baseUrl}/users`,
-                    headers: {
-                        access_token: args.token,
-                    },
-                });
-                // console.log(response);
-                return response.data;
+                let allUsers = await redis.get("allUsers");
+                if (allUsers) return JSON.parse(allUsers);
+                else {
+                    let response = await axios({
+                        method: "GET",
+                        url: `${baseUrl}/users`,
+                        headers: {
+                            access_token: args.token,
+                        },
+                    });
+                    // console.log(response);
+                    return response.data;
+                }
             } catch (err) {
-                console.log(err);
+                return err;
             }
         },
 
         async itineraries(_, args) {
             // console.log(args);
             try {
-                let response = await axios({
-                    method: "GET",
-                    url: `${baseUrl}/itineraries`,
-                    headers: {
-                        access_token: args.token,
-                    },
-                });
-                // console.log(response);
-                return response.data;
+                let allItineraries = await redis.get("allItineraries");
+                if (allItineraries) return JSON.parse(allItineraries);
+                else {
+                    let response = await axios({
+                        method: "GET",
+                        url: `${baseUrl}/itineraries`,
+                        headers: {
+                            access_token: args.token,
+                        },
+                    });
+                    // console.log(response);
+                    return response.data;
+                }
             } catch (err) {
                 console.log(err);
                 return err;
@@ -148,14 +183,18 @@ const resolvers = {
 
         async transactions(_, args) {
             try {
-                let response = await axios({
-                    method: "GET",
-                    url: `${baseUrl}/transactions`,
-                    headers: {
-                        access_token: args.token,
-                    },
-                });
-                return response.data;
+                let allTransactions = await redis.get("allTransactions");
+                if (allTransactions) return JSON.parse("allTransactions");
+                else {
+                    let response = await axios({
+                        method: "GET",
+                        url: `${baseUrl}/transactions`,
+                        headers: {
+                            access_token: args.token,
+                        },
+                    });
+                    return response.data;
+                }
             } catch (err) {
                 return err;
             }
@@ -216,21 +255,24 @@ const resolvers = {
             const newItinerary = {
                 checkIn: args.checkIn,
                 checkOut: args.checkOut,
-                places: {
-                    name: args.name,
-                    locationId: args.locationId,
-                    location: args.location,
-                    latitude: args.latitude,
-                    longitude: args.longitude,
-                    rating: args.rating,
-                    description: args.description,
-                    image: args.image,
-                },
-                price: +args.price,
-                day: args.day,
+                plans: [],
+                title: args.title,
+                // plans: {
+                //     name: args.name,
+                //     locationId: args.locationId,
+                //     location: args.location,
+                //     latitude: args.latitude,
+                //     longitude: args.longitude,
+                //     rating: args.rating,
+                //     description: args.description,
+                //     image: args.image,
+                // },
+                // price: +args.price,
+                // day: args.day,
             };
 
             try {
+                await redis.del("allItineraries");
                 let response = await axios({
                     method: "POST",
                     url: `${baseUrl}/itineraries`,
@@ -241,6 +283,7 @@ const resolvers = {
                 });
                 // newItinerary._id = response.data._id;
                 // console.log(response.data);
+                console.log(response.data);
                 return response.data;
             } catch (err) {
                 // console.log(err.message);
@@ -252,7 +295,7 @@ const resolvers = {
             const updatedItinerary = {
                 checkIn: args.checkIn,
                 checkOut: args.checkOut,
-                places: {
+                plans: {
                     name: args.name,
                     locationId: args.locationId,
                     location: args.location,
@@ -267,6 +310,7 @@ const resolvers = {
             };
 
             try {
+                await redis.del("allItineraries");
                 let response = await axios({
                     method: "PUT",
                     url: `${baseUrl}/itineraries/${args._id}`,
@@ -287,6 +331,7 @@ const resolvers = {
         async deleteItinerary(_, args) {
             const id = args._id;
             try {
+                await redis.del("allItineraries");
                 let response = await axios({
                     method: "DELETE",
                     url: `${baseUrl}/itineraries/${id}`,
@@ -303,6 +348,7 @@ const resolvers = {
 
         async addTransaction(_, args) {
             try {
+                await redis.del("allTransactions");
                 let response = await axios({
                     method: "POST",
                     url: `${baseUrl}/transactions`,
@@ -317,6 +363,42 @@ const resolvers = {
                 });
                 return response.data;
             } catch (err) {
+                return err;
+            }
+        },
+
+        async insertPlans(_, args) {
+            console.log(args);
+            const plans = {
+                places: [
+                    {
+                        locationId: args.locationId,
+                        location: args.location,
+                        latitude: args.latitude,
+                        longitude: args.longitude,
+                        rating: args.rating,
+                        description: args.description,
+                        image: args.image,
+                        price: +args.price,
+                    },
+                ],
+                day: args.day,
+            };
+            try {
+                await redis.del("allItineraries");
+                let response = await axios({
+                    method: "PATCH",
+                    url: `${baseUrl}/itineraries/${args._id}`,
+                    headers: {
+                        access_token: args.token,
+                    },
+                    data: plans,
+                });
+                // newItinerary._id = response.data._id;
+                console.log(JSON.stringify(response.data, null, 2));
+                return response.data;
+            } catch (err) {
+                // console.log(err.message);
                 return err;
             }
         },
