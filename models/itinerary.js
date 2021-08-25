@@ -43,8 +43,7 @@ const ItinerarySchema = new mongoose.Schema({
         required: true,
     },
     plans: {
-        type: [],
-        required: true,
+        type: String,
     },
     title: {
         type: String,

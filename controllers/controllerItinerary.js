@@ -7,6 +7,7 @@ class Controller {
         const { _id: UserId } = req.user;
         try {
             let response = await Itinerary.find({ UserId });
+            // let response = await Itinerary.find();
             // console.log(response);
             res.status(200).json(response);
         } catch (err) {
@@ -34,12 +35,13 @@ class Controller {
     }
 
     static async postItinerary(req, res) {
-        const { _id: UserId } = req.user;
         // console.log(req.user);
+        const { _id: UserId } = req.user;
 
-        // console.log(req.body, 1996696896);
+        console.log(req.body, 1996696896);
 
-        const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day, places, title } = req.body;
+        const { checkIn, checkOut, title } = req.body;
+        // const { checkIn, checkOut, locationId, location, longitude, latitude, price, rating, description, name, image, day, places, title } = req.body;
 
         // const newItinerary = {
         //     UserId,
@@ -59,14 +61,14 @@ class Controller {
         // };
 
         try {
-            let response = await Itinerary.findOne({ name });
+            let response;
 
             let newItinerary = new Itinerary({
                 UserId,
                 title,
                 checkIn,
                 checkOut,
-                plans: [],
+                plans: "",
             });
             response = await newItinerary.save();
             // console.log(response, 1231244134);
@@ -143,25 +145,26 @@ class Controller {
 
     static async insertPlans(req, res) {
         const id = req.params.id;
-        // console.log(req.body);
+        console.log(req.body.plans, 123);
         // console.log(Object.keys(req.body).length !== 0);
-        if (Object.keys(req.body).length === 0) {
-            return res.status(400).json({ message: "please fill plans" });
-        } else {
-            try {
-                let response = await Itinerary.findOneAndUpdate({ _id: id }, { plans: req.body }, { new: true });
+        // if (Object.keys(req.body).length === 0) {
+        //     return res.status(400).json({ message: "please fill plans" });
+        // } else {
+        try {
+            let response = await Itinerary.findOneAndUpdate({ _id: id }, { plans: req.body.plans }, { new: true });
+            console.log(response, 12312);
 
-                if (response) {
-                    // console.log(response.plans);
-                    return res.status(200).json(response);
-                } else {
-                    return res.status(404).json({ message: "Itinerary not found" });
-                }
-            } catch (err) {
-                /* istanbul ignore next */
-                return res.status(500).json({ message: "Internal server error" });
+            if (response) {
+                // console.log(response.plans);
+                return res.status(200).json(response);
+            } else {
+                return res.status(404).json({ message: "Itinerary not found" });
             }
+        } catch (err) {
+            /* istanbul ignore next */
+            return res.status(500).json({ message: "Internal server error" });
         }
+        // }
     }
 }
 
