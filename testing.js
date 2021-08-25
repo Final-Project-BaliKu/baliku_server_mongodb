@@ -1,8 +1,13 @@
-let data = "2021-08-16";
+// let data = "2021-08-16";
 
-console.log(+data.slice(8, 10)); // day
-console.log(+data.slice(0, 4)); // month
-console.log(+data.slice(5, 7)); // year
+// console.log(+data.slice(8, 10)); // day
+// console.log(+data.slice(0, 4)); // month
+// console.log(+data.slice(5, 7)); // year
+
+let data = new Date();
+console.log(data.toLocaleString("default", { month: "long" }));
+
+// data.toDateString;
 
 // {
 //     _id : ObjectId("6124640820c29e4687ab8338"),

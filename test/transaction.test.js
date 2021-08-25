@@ -42,7 +42,6 @@ describe("transactions test case", () => {
             email: "test@mail.com",
             password: "test123",
         });
-        // console.log(response);
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("token", expect.any(String));
         access_token = response.body.token;
@@ -55,7 +54,6 @@ describe("transactions test case", () => {
             title: "Explore hidden gems",
         });
         expect(response.status).toBe(201);
-        // console.log(response.body);
         id = response.body._id;
     });
 
@@ -63,7 +61,6 @@ describe("transactions test case", () => {
         const response = await request(app).post("/transactions").set("access_token", access_token).send({
             price: 750,
         });
-        // console.log(response.body, response.status);
         expect(response.status).toBe(400);
     });
 
@@ -74,7 +71,7 @@ describe("transactions test case", () => {
 
     it("should get one detail transactions by ID", async () => {
         const response = await request(app).get(`/transactions/${id}`).set("access_token", access_token).send();
-        // console.log(response.body);
+
         expect(response.status).toBe(200);
     });
 

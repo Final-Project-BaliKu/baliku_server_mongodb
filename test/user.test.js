@@ -67,7 +67,6 @@ describe("Test case user", () => {
         const response = await request(app).post("/users/register").send({
             password: "test123",
         });
-        // console.log(response.body);
         expect(response.status).toBe(400);
     });
 
@@ -84,7 +83,6 @@ describe("Test case user", () => {
             email: "test@mail.com",
             password: "test123",
         });
-        // console.log(response);
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("token", expect.any(String));
         access_token = response.body.token;
@@ -95,7 +93,6 @@ describe("Test case user", () => {
             email: "test@mail.com",
             password: "test12345",
         });
-        // console.log(response);
         expect(response.status).toBe(401);
         expect(response.body).toBe("email and Password not match");
     });
@@ -105,30 +102,26 @@ describe("Test case user", () => {
             email: "test12345@mail.com",
             password: "test123",
         });
-        // console.log(response);
         expect(response.status).toBe(404);
         expect(response.body).toBe("email not registered");
     });
 
     it("Get all user", async () => {
         const response = await request(app).get("/users").set("access_token", access_token).send();
-        // console.log(response.body, 123123);
+
         expect(response.status).toBe(200);
-        // expect(response.body).toBe("Username and Password not match");
     });
 
     it("Get all user", async () => {
         const response = await request(app).get("/users").set("access_token", "access_token").send();
-        // console.log(response.body, 123123);
+
         expect(response.status).toBe(400);
-        // expect(response.body).toBe("Username and Password not match");
     });
 
     it("Get all user", async () => {
         const response = await request(app).get("/users").send();
-        // console.log(response.body, 123123);
+
         expect(response.status).toBe(400);
-        // expect(response.body).toBe("Username and Password not match");
     });
 
     it("should not able to register a user unique", async () => {

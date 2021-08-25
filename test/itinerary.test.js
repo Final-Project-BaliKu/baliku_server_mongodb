@@ -42,19 +42,16 @@ describe("itineraries test case", () => {
             email: "test@mail.com",
             password: "test123",
         });
-        // console.log(response);
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("token", expect.any(String));
         access_token = response.body.token;
     });
 
     it("should add itinerary", async () => {
-        // console.log(access_token);
         const response = await request(app)
             .post("/itineraries")
             .set("access_token", access_token)
             .send({
-                // UserId: 1,
                 checkIn: "10/11/2020",
                 checkOut: "10/12/2020",
                 plans: [
@@ -71,7 +68,6 @@ describe("itineraries test case", () => {
                 ],
                 title: "Explore yourself",
             });
-        // console.log(response.body);
         id = response.body._id;
         expect(response.status).toBe(201);
     });
@@ -83,120 +79,71 @@ describe("itineraries test case", () => {
     });
 
     it("should get detail of one itinerary", async () => {
-        // console.log(id);
         const response = await request(app).get(`/itineraries/${id}`).set("access_token", access_token).send();
-        // console.log(response.body);
+
         expect(response.status).toBe(200);
     });
 
     it("should not get detail of one itinerary with wrong id", async () => {
-        // console.log(id);
         const response = await request(app).get(`/itineraries/6120f16420578585cbe4fc29`).set("access_token", access_token).send();
-        // console.log(response.body);
+
         expect(response.status).toBe(404);
     });
 
     it("should not update detail of one itinerary when fields not filled", async () => {
-        // console.log(id);
         const response = await request(app).put(`/itineraries/${id}`).set("access_token", access_token).send({});
-        // console.log(response.body);
+
         expect(response.status).toBe(400);
     });
 
     it("should update detail of one itinerary", async () => {
-        // console.log(id);
-        const response = await request(app)
-            .put(`/itineraries/${id}`)
-            .set("access_token", access_token)
-            .send({
-                // UserId: 1,
-                checkIn: "10/11/2020",
-                checkOut: "10/12/2020",
-                plans: [
-                    {
-                        name: "monkey forest 14",
-                        locationId: "123321",
-                        location: "Ubud, Gianyar",
-                        latitude: "-8.5184",
-                        longitude: "115.25884",
-                        rating: "4",
-                        description: "loremfewfwefew fwefwqfwf fewfawaewfewf ewffewfewfwe",
-                        image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
-                    },
-                ],
-            });
+        const response = await request(app).put(`/itineraries/${id}`).set("access_token", access_token).send({
+            checkIn: "10/11/2020",
+            checkOut: "10/12/2020",
+            plans: "test",
+        });
         expect(response.status).toBe(200);
     });
 
     it("should update plans", async () => {
-        // console.log(id);
-        const response = await request(app)
-            .patch(`/itineraries/${id}`)
-            .set("access_token", access_token)
-            .send({
-                // UserId: 1,
-                plans: [
-                    {
-                        flight: "QZ 7463",
-                    },
-                ],
-            });
+        const response = await request(app).patch(`/itineraries/${id}`).set("access_token", access_token).send({
+            plans: "test",
+        });
         expect(response.status).toBe(200);
     });
 
     it("should not update plans when fields not filled", async () => {
-        // console.log(id);
         const response = await request(app).patch(`/itineraries/${id}`).set("access_token", access_token).send();
-        // console.log(response.body);
+
         expect(response.status).toBe(400);
     });
 
     it("should able to delete one itinerary", async () => {
-        // console.log(id);
         const response = await request(app).delete(`/itineraries/${id}`).set("access_token", access_token).send();
-        // console.log(response.body);
+
         expect(response.status).toBe(200);
     });
 
     it("should not be able to delete one itinerary when id not found", async () => {
-        // console.log(id);
         const response = await request(app).delete(`/itineraries/${id}`).set("access_token", access_token).send();
-        // console.log(response.body);
+
         expect(response.status).toBe(404);
     });
 
     it("should not update detail of one itinerary when id not found", async () => {
-        // console.log(id);
-        const response = await request(app)
-            .put(`/itineraries/${id}`)
-            .set("access_token", access_token)
-            .send({
-                // UserId: 1,
-                checkIn: "10/11/2020",
-                checkOut: "10/12/2020",
-                plans: [
-                    {
-                        name: "monkey forest 14",
-                        locationId: "123321",
-                        location: "Ubud, Gianyar",
-                        latitude: "-8.5184",
-                        longitude: "115.25884",
-                        rating: "4",
-                        description: "loremfewfwefew fwefwqfwf fewfawaewfewf ewffewfewfwe",
-                        image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
-                    },
-                ],
-            });
+        const response = await request(app).put(`/itineraries/${id}`).set("access_token", access_token).send({
+            checkIn: "10/11/2020",
+            checkOut: "10/12/2020",
+            plans: "test",
+        });
         expect(response.status).toBe(404);
     });
 
     it("should not add itinerary when id not found", async () => {
-        // console.log(id);
         const response = await request(app)
             .post(`/itineraries/`)
             .set("access_token", access_token)
             .send({
-                // UserId: 1,
                 plans: [
                     {
                         name: "monkey forest 14",
@@ -214,25 +161,9 @@ describe("itineraries test case", () => {
     });
 
     it("should not update itinerary when id not found", async () => {
-        // console.log(id);
-        const response = await request(app)
-            .patch(`/itineraries/${id}`)
-            .set("access_token", access_token)
-            .send({
-                // UserId: 1,
-                plans: [
-                    {
-                        name: "monkey forest 14",
-                        locationId: "123321",
-                        location: "Ubud, Gianyar",
-                        latitude: "-8.5184",
-                        longitude: "115.25884",
-                        rating: "4",
-                        description: "loremfewfwefew fwefwqfwf fewfawaewfewf ewffewfewfwe",
-                        image: "https://media-cdn.tripadvisor.com/media/photo-s/03/bf/9c/95/monkey-forest.jpg",
-                    },
-                ],
-            });
+        const response = await request(app).patch(`/itineraries/${id}`).set("access_token", access_token).send({
+            plans: "test",
+        });
         expect(response.status).toBe(404);
     });
 });

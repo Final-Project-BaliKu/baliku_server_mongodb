@@ -121,8 +121,6 @@ const typeDefs = gql`
 const resolvers = {
     Query: {
         async users(_, args) {
-            console.log("masuk");
-            // console.log(args);
             try {
                 let allUsers = await redis.get("allUsers");
                 if (allUsers) return JSON.parse(allUsers);
@@ -134,7 +132,6 @@ const resolvers = {
                         //     access_token: args.token,
                         // },
                     });
-                    console.log(response);
                     return response.data;
                 }
             } catch (err) {
@@ -142,10 +139,7 @@ const resolvers = {
             }
         },
 
-        // async itineraries(_, args) {
         async itineraries(_, __, context) {
-            // console.log("masuk");
-            // console.log(context);
             try {
                 let allItineraries = await redis.get("allItineraries");
                 if (allItineraries) return JSON.parse(allItineraries);
@@ -157,17 +151,14 @@ const resolvers = {
                             access_token: context.token,
                         },
                     });
-                    // console.log(response.data);
                     return response.data;
                 }
             } catch (err) {
-                console.log(err.response);
                 return err;
             }
         },
 
         async itinerary(_, args, context) {
-            // console.log(args);
             try {
                 let response = await axios({
                     method: "GET",
@@ -176,7 +167,6 @@ const resolvers = {
                         access_token: context.token,
                     },
                 });
-                console.log(response.data);
                 return response.data;
             } catch (err) {
                 return err;
@@ -220,7 +210,6 @@ const resolvers = {
 
     Mutation: {
         async register(_, args) {
-            console.log("masuk register");
             try {
                 let response = await axios({
                     method: "POST",
@@ -230,16 +219,13 @@ const resolvers = {
                         password: args.password,
                     },
                 });
-                // console.log(response.data);
                 return response.data;
             } catch (err) {
-                console.log(err.response.data);
                 throw new Error(err.response.data);
             }
         },
 
         async login(_, args) {
-            console.log(args);
             try {
                 let response = await axios({
                     method: "POST",
@@ -249,18 +235,13 @@ const resolvers = {
                         password: args.password,
                     },
                 });
-                // console.log(response.data);
                 return response.data;
             } catch (err) {
-                console.log(err.response.data);
                 throw new Error(err.response.data);
             }
         },
 
         async postItinerary(_, args, context) {
-            // console.log(context);
-            // console.log(args);
-            console.log("masuk");
             const newItinerary = {
                 checkIn: args.checkIn,
                 checkOut: args.checkOut,
@@ -290,12 +271,8 @@ const resolvers = {
                         access_token: context.token,
                     },
                 });
-                // newItinerary._id = response.data._id;
-                // console.log(response.data);
-                // console.log(response.data);
                 return response.data;
             } catch (err) {
-                // console.log(err.message);
                 return err;
             }
         },
@@ -328,11 +305,8 @@ const resolvers = {
                     },
                     data: updatedItinerary,
                 });
-                // newItinerary._id = response.data._id;
-                // console.log(response.data);
                 return response.data;
             } catch (err) {
-                // console.log(err.message);
                 return err;
             }
         },
@@ -348,7 +322,6 @@ const resolvers = {
                         access_token: context.token,
                     },
                 });
-                console.log(response.data);
                 return "Iternary has been deleted";
             } catch (err) {
                 return err;
@@ -377,24 +350,6 @@ const resolvers = {
         },
 
         async insertPlans(_, args, context) {
-            console.log(context, 123);
-            console.log(args);
-            // const plans = {
-            //     places: [
-            //         {
-            //             locationId: args.locationId,
-            //             location: args.location,
-            //             latitude: args.latitude,
-            //             longitude: args.longitude,
-            //             rating: args.rating,
-            //             description: args.description,
-            //             image: args.image,
-            //             price: args.price,
-            //             ranking: args.ranking,
-            //         },
-            //     ],
-            //     day: args.day,
-            // };
             try {
                 await redis.del("allItineraries");
                 let response = await axios({
@@ -405,11 +360,8 @@ const resolvers = {
                     },
                     data: args,
                 });
-                // newItinerary._id = response.data._id;
-                console.log(JSON.stringify(response.data, null, 2));
                 return response.data;
             } catch (err) {
-                console.log(err.message);
                 return err;
             }
         },

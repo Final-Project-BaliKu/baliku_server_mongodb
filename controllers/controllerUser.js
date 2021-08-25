@@ -15,10 +15,8 @@ class Controller {
         password = bcrypt.hashSync(password, salt);
         try {
             const response = await User.create({ email, password });
-            // console.log(response);
             res.status(201).json(response);
         } catch (err) {
-            // console.log(err.message);
             /* istanbul ignore else */
             if (err.message !== undefined) {
                 res.status(400).json(err.message);
@@ -28,20 +26,17 @@ class Controller {
         }
     }
     static async login(req, res) {
-        // console.log("ENTER");
         const { email, password } = req.body;
-        // console.log(email, password);
+
         try {
             const response = await User.findOne({ email });
             if (!response) {
-                // console.log(response);
                 res.status(404).json("email not registered");
             } else if (bcrypt.compareSync(password, response.password)) {
                 let token = jwt.sign({ id: response._id, email: response.email }, process.env.SECRET_KEY, { expiresIn: 60 * 60 });
-                // console.log(token);
+
                 res.status(200).json({ token, email });
             } else {
-                console.log("masuuk");
                 res.status(401).json("email and Password not match");
             }
         } catch (error) {
@@ -50,10 +45,8 @@ class Controller {
         }
     }
     static async getAll(req, res) {
-        // console.log("ENTERING GETALL");
         try {
             const response = await User.find();
-            // console.log(response);
             res.status(200).json(response);
         } catch (error) {
             /* istanbul ignore next */
