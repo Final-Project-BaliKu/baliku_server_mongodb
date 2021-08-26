@@ -114,7 +114,6 @@ describe("itineraries test case", () => {
 
     it("should not update plans when fields not filled", async () => {
         const response = await request(app).patch(`/itineraries/${id}`).set("access_token", access_token).send();
-
         expect(response.status).toBe(400);
     });
 

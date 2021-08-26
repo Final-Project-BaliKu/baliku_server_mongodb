@@ -111,18 +111,23 @@ class Controller {
     static async insertPlans(req, res) {
         const id = req.params.id;
 
-        try {
-            let response = await Itinerary.findOneAndUpdate({ _id: id }, { plans: req.body.plans }, { new: true });
+        if (!req.body.plans) {
+            res.status(400).json({ message: "Plans must be filled" });
+        } else {
+            try {
+                let response = await Itinerary.findOneAndUpdate({ _id: id }, { plans: req.body.plans }, { new: true });
 
-            if (response) {
-                return res.status(200).json(response);
-            } else {
-                return res.status(404).json({ message: "Itinerary not found" });
+                if (response) {
+                    return res.status(200).json(response);
+                } else {
+                    return res.status(404).json({ message: "Itinerary not found" });
+                }
+            } catch (err) {
+                /* istanbul ignore next */
+                return res.status(500).json({ message: "Internal server error" });
             }
-        } catch (err) {
-            /* istanbul ignore next */
-            return res.status(500).json({ message: "Internal server error" });
         }
+
         // }
     }
 }
